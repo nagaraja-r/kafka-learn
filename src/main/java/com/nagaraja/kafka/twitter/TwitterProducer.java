@@ -28,10 +28,10 @@ import java.util.concurrent.TimeUnit;
 public class TwitterProducer {
     private static final Logger logger = LoggerFactory.getLogger(TwitterProducer.class.getName());
 
-    String consumerKey = "PODPpIuZ2SVN8nM98GwLpFhL2";
-    String consumerSecret = "zAIJqOqVpNDczbqRjCaAhUyL3auUOVSMykI2t2xFQRJRbi4jgJ";
-    String token = "1356219911215874050-q2OdthHEtdA17EQgekMQWNihNs1ZFB";
-    String secret = "4ev4AWrZD1Ppiaap3bbn0UoHmJaZZgBqxccbir0NvwFpz";
+    String consumerKey = "";
+    String consumerSecret = "";
+    String token = "";
+    String secret = "";
     List<String> terms = Lists.newArrayList("kafka");
 
     public static void main(String[] args) {
@@ -95,6 +95,14 @@ public class TwitterProducer {
         properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+
+        // create safe producer
+        properties.setProperty(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true");
+        properties.setProperty(ProducerConfig.ACKS_CONFIG, "all"); // equivalent to -1, might see -1 in the logs
+        properties.setProperty(ProducerConfig.RETRIES_CONFIG, Integer.toString(Integer.MAX_VALUE));
+        properties.setProperty(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, "5");
+        // kafka 2.8 >=1.1 so we can keep this as 5. Use 1 otherwise
+
         // create Producer
         KafkaProducer<String, String> producer = new KafkaProducer<String,
                 String>(properties);
