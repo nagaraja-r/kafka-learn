@@ -1,4 +1,4 @@
-package com.nagaraja.kafka;
+package com.kafka.twitter.basics;
 
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -10,13 +10,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
-import java.util.Random;
+import java.util.concurrent.ExecutionException;
 
-public class ProducerDemoWithCallback {
+public class ProducerDemoWithKeys {
 
-    public static void main(String[] args) {
-        Logger logger =
-                LoggerFactory.getLogger(ProducerDemoWithCallback.class.getName());
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+        Logger logger = LoggerFactory.getLogger(ProducerDemoWithKeys.class.getName());
         String bootstrapServers = "127.0.0.1:9092";
         // create a Producer Properties
         Properties properties = new Properties();
@@ -24,16 +23,24 @@ public class ProducerDemoWithCallback {
         properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         // create Producer
-        KafkaProducer<String, String> producer = new KafkaProducer<String, String>(properties);
+        KafkaProducer<String, String> producer = new KafkaProducer<String,
+                String>(properties);
 
 
         int i = 0;
-        while (i < 100000) {
+        while (i < 10) {
+
             // create a Producer Record
+            String topic = "first_topic";
+            String value = "Hello World " + i;
+            String key = "id_" + i;
             ProducerRecord<String, String> producerRecord =
                     new ProducerRecord<>(
-                            "first_topic",
-                            "Hello World" + new Random());
+                            topic,
+                            key,
+                            value);
+
+            logger.info("Key : " + key);
 
             // send data - asynchronous
             producer.send(producerRecord, new Callback() {
@@ -54,13 +61,12 @@ public class ProducerDemoWithCallback {
                     }
 
                 }
-            });
+            }).get(); // block .send() to make synchronous
             //flush data
             producer.flush();
             i++;
+
         }
         producer.close();
-
-
     }
 }

@@ -1,4 +1,4 @@
-package com.nagaraja.kafka;
+package com.kafka.twitter.basics;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;

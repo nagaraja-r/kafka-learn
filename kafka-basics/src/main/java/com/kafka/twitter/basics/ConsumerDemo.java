@@ -1,4 +1,4 @@
-package com.nagaraja.kafka;
+package com.kafka.twitter.basics;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -12,13 +12,13 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.Properties;
 
-public class ConsumerDemoWithGroups {
+public class ConsumerDemo {
 
     public static void main(String[] args) {
-        Logger logger = LoggerFactory.getLogger(ConsumerDemoWithGroups.class.getName());
+        Logger logger = LoggerFactory.getLogger(ConsumerDemo.class.getName());
 
         String bootstrapServer = "127.0.0.1:9092";
-        String groupId = "my-fifth-application";
+        String groupId = "my-fourth-application";
 
         Properties properties = new Properties();
         properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
