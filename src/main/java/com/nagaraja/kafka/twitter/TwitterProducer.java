@@ -28,11 +28,11 @@ import java.util.concurrent.TimeUnit;
 public class TwitterProducer {
     private static final Logger logger = LoggerFactory.getLogger(TwitterProducer.class.getName());
 
-    String consumerKey = "";
-    String consumerSecret = "";
-    String token = "";
-    String secret = "";
-    List<String> terms = Lists.newArrayList("kafka");
+    String consumerKey = "TEST";
+    String consumerSecret = "TEST";
+    String token = "TEST";
+    String secret = "TEST";
+    List<String> terms = Lists.newArrayList("bitcoin","usa","politics","sport");
 
     public static void main(String[] args) {
         new TwitterProducer().run();
@@ -102,6 +102,11 @@ public class TwitterProducer {
         properties.setProperty(ProducerConfig.RETRIES_CONFIG, Integer.toString(Integer.MAX_VALUE));
         properties.setProperty(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, "5");
         // kafka 2.8 >=1.1 so we can keep this as 5. Use 1 otherwise
+
+        //high throughput producer (at the expense of a bit latency and CPU usage)
+        properties.setProperty(ProducerConfig.COMPRESSION_TYPE_CONFIG, "snappy");
+        properties.setProperty(ProducerConfig.LINGER_MS_CONFIG,"20"); //delay of 20ms
+        properties.setProperty(ProducerConfig.BATCH_SIZE_CONFIG,Integer.toString(32*1024)); //32KB
 
         // create Producer
         KafkaProducer<String, String> producer = new KafkaProducer<String,
